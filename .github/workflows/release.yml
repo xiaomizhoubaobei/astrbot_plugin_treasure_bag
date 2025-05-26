@@ -63,6 +63,11 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Import GPG Key
+        run: echo "$PGP_PRIVATE_KEY" | gpg --batch --import
+        env:
+          PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+
       - name: Install dependencies
         run: pip install pip-licenses
 
