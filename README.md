@@ -1,5 +1,13 @@
 # Treasure Bag Plugin
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3bd5aec8a8204b66a289d8ffe83128ac)](https://app.codacy.com/gh/xiaomizhoubaobei/astrbot_plugin_treasure_bag/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_shield&issueType=security)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_small)
+[![GitHub issues](https://img.shields.io/github/issues/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/issues)
+[![GitHub license](https://img.shields.io/github/license/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/blob/master/LICENSE)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/xiaomizhoubaobei/astrbot_plugin_treasure_bag/Release)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/actions)
+
 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
 
 ## 功能详情
@@ -68,3 +76,4 @@
 
 ## 支持
 如有问题，请参考[官方文档](https://astrbot.app)或联系开发者。
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_large&issueType=license)
