@@ -67,6 +67,7 @@ jobs:
         run: echo "$PGP_PRIVATE_KEY" | gpg --batch --yes --pinentry-mode loopback --import
         env:
           PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
 
       - name: Install dependencies
         run: pip install pip-licenses
