@@ -64,7 +64,7 @@ jobs:
           python-version: '3.x'
 
       - name: Import GPG Key
-        run: echo "$PGP_PRIVATE_KEY" | gpg --batch --import
+        run: echo "$PGP_PRIVATE_KEY" | gpg --batch --yes --pinentry-mode loopback --import
         env:
           PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
 
@@ -162,10 +162,10 @@ jobs:
           asset_content_type: application/zip
 
       - name: Sign sdist package
-        run: gpg --batch --yes --output ${{ steps.find_packages.outputs.sdist_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.sdist_file }}
+        run: gpg --batch --yes --pinentry-mode loopback --output ${{ steps.find_packages.outputs.sdist_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.sdist_file }}
 
       - name: Sign wheel package
-        run: gpg --batch --yes --output ${{ steps.find_packages.outputs.wheel_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.wheel_file }}
+        run: gpg --batch --yes --pinentry-mode loopback --output ${{ steps.find_packages.outputs.wheel_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.wheel_file }}
 
       - name: Upload sdist signature to Release
         uses: actions/upload-release-asset@v1
@@ -188,13 +188,13 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Sign SBOM
-        run: gpg --batch --yes --output sbom.json.gpg --detach-sign sbom.json
+        run: gpg --batch --yes --pinentry-mode loopback --output sbom.json.gpg --detach-sign sbom.json
 
       - name: Sign Hashes
-        run: gpg --batch --yes --output hashes.zip.gpg --detach-sign hashes.zip
+        run: gpg --batch --yes --pinentry-mode loopback --output hashes.zip.gpg --detach-sign hashes.zip
 
       - name: Sign Signature
-        run: gpg --batch --yes --output ${{ steps.create-signature.outputs.signature }}.gpg --detach-sign ${{ steps.create-signature.outputs.signature }}
+        run: gpg --batch --yes --pinentry-mode loopback --output ${{ steps.create-signature.outputs.signature }}.gpg --detach-sign ${{ steps.create-signature.outputs.signature }}
 
       - name: Upload SBOM signature to Release
         uses: actions/upload-release-asset@v1
@@ -227,5 +227,5 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Delete GPG Key
-        run: gpg --batch --yes --delete-secret-keys "${{ secrets.GPG_KEY_ID }}" && gpg --batch --yes --delete-keys "${{ secrets.GPG_KEY_ID }}"
+        run: gpg --batch --yes --pinentry-mode loopback --delete-secret-keys "${{ secrets.GPG_KEY_ID }}" && gpg --batch --yes --pinentry-mode loopback --delete-keys "${{ secrets.GPG_KEY_ID }}"
         if: always()
