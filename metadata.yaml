@@ -1,0 +1,5 @@
+name: treasure_bag_plugin
+author: 祁筱欣
+description: 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
+version: 1.1.4
+repo: https://github.com/xiaomizhoubaobei/astrbot_plugin_xmz # 请替换为你的插件仓库地址 (如果需要)
