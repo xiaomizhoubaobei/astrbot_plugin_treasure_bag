@@ -95,7 +95,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: v${{ env.version }}
           name: Release v${{ env.version }}
           body: |
             🎉 发布新版本${{ env.version }} 🎉
@@ -165,7 +164,7 @@ jobs:
           passphrase: ${{ secrets.PGP_PASSPHRASE }}
 
       - name: Save sdist OpenPGP Signature to file
-        run: echo "${{ steps.sign_sdist.outputs.encrypted-text }}" > ${{ steps.find_packages.outputs.sdist_file }}.sig
+        run: echo "${{ steps.sign_sdist.outputs.encrypted-text }}" > ${{ steps.find_packages.outputs.sdist_file }}.gpg
 
       - name: Upload sdist OpenPGP Signature to Release
         uses: actions/upload-release-asset@v1
@@ -173,8 +172,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_packages.outputs.sdist_file }}.sig
-          asset_name: $(basename ${{ steps.find_packages.outputs.sdist_file }}).sig
+          asset_path: ${{ steps.find_packages.outputs.sdist_file }}.gpg
+          asset_name: $(basename ${{ steps.find_packages.outputs.sdist_file }}).gpg
           asset_content_type: application/pgp-signature
 
       - name: Sign wheel package with OpenPGP
