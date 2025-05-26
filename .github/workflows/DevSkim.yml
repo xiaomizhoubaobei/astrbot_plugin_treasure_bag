@@ -5,9 +5,12 @@ name: DevSkim Multi-Environment Analysis
 
 on:
   push:
-    branches: [ "master" ]
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
+      branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
   schedule:
     - cron: '26 2 * * 6'
 

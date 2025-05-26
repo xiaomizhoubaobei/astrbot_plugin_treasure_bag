@@ -156,86 +156,67 @@ jobs:
           asset_name: hashes.zip
           asset_content_type: application/zip
 
-      - name: Sign wheel package with OpenPGP
-        uses: oplik0/openpgp-action@v3
-        id: sign_wheel
-        with:
-          text: ${{ steps.find_packages.outputs.wheel_file }}
-          key: ${{ secrets.PGP_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PGP_PASSPHRASE }}
+      - name: Sign sdist package
+        run: gpg --output ${{ steps.find_packages.outputs.sdist_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.sdist_file }}
 
-      - name: Save wheel OpenPGP Signature to file
-        run: echo "${{ steps.sign_wheel.outputs.encrypted-text }}" > ${{ steps.find_packages.outputs.wheel_file }}.sig
+      - name: Sign wheel package
+        run: gpg --output ${{ steps.find_packages.outputs.wheel_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.wheel_file }}
 
-      - name: Upload wheel OpenPGP Signature to Release
+      - name: Upload sdist signature to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_packages.outputs.wheel_file }}.sig
-          asset_name: $(basename ${{ steps.find_packages.outputs.wheel_file }}).sig
-          asset_content_type: application/pgp-signature
+          asset_path: ${{ steps.find_packages.outputs.sdist_file }}.gpg
+          asset_name: $(basename ${{ steps.find_packages.outputs.sdist_file }}.gpg)
+          asset_content_type: application/octet-stream
 
-      - name: Sign SBOM with OpenPGP
-        uses: oplik0/openpgp-action@v3
-        id: sign_sbom
-        with:
-          text: sbom.json
-          key: ${{ secrets.PGP_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PGP_PASSPHRASE }}
-
-      - name: Save SBOM OpenPGP Signature to file
-        run: echo "${{ steps.sign_sbom.outputs.encrypted-text }}" > sbom.json.sig
-
-      - name: Upload SBOM OpenPGP Signature to Release
+      - name: Upload wheel signature to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: sbom.json.sig
-          asset_name: sbom.json.sig
-          asset_content_type: application/pgp-signature
+          asset_path: ${{ steps.find_packages.outputs.wheel_file }}.gpg
+          asset_name: $(basename ${{ steps.find_packages.outputs.wheel_file }}.gpg)
+          asset_content_type: application/octet-stream
 
-      - name: Sign Hashes with OpenPGP
-        uses: oplik0/openpgp-action@v3
-        id: sign_hashes
-        with:
-          text: hashes.zip
-          key: ${{ secrets.PGP_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PGP_PASSPHRASE }}
+      - name: Sign SBOM
+        run: gpg --output sbom.json.gpg --detach-sign sbom.json
 
-      - name: Save Hashes OpenPGP Signature to file
-        run: echo "${{ steps.sign_hashes.outputs.encrypted-text }}" > hashes.zip.sig
+      - name: Sign Hashes
+        run: gpg --output hashes.zip.gpg --detach-sign hashes.zip
 
-      - name: Upload Hashes OpenPGP Signature to Release
+      - name: Sign Signature
+        run: gpg --output ${{ steps.create-signature.outputs.signature }}.gpg --detach-sign ${{ steps.create-signature.outputs.signature }}
+
+      - name: Upload SBOM signature to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: hashes.zip.sig
-          asset_name: hashes.zip.sig
-          asset_content_type: application/pgp-signature
+          asset_path: sbom.json.gpg
+          asset_name: sbom.json.gpg
+          asset_content_type: application/octet-stream
 
-      - name: Sign Electronic Signature with OpenPGP
-        uses: oplik0/openpgp-action@v3
-        id: sign_electronic_signature
-        with:
-          text: ${{ steps.create-signature.outputs.signature }}
-          key: ${{ secrets.PGP_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PGP_PASSPHRASE }}
-
-      - name: Save Electronic Signature OpenPGP Signature to file
-        run: echo "${{ steps.sign_electronic_signature.outputs.encrypted-text }}" > ${{ steps.create-signature.outputs.signature }}.sig
-
-      - name: Upload Electronic Signature OpenPGP Signature to Release
+      - name: Upload Hashes signature to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.create-signature.outputs.signature }}.sig
-          asset_name: ${{ steps.create-signature.outputs.label }}.signature.sig
-          asset_content_type: application/pgp-signature
+          asset_path: hashes.zip.gpg
+          asset_name: hashes.zip.gpg
+          asset_content_type: application/octet-stream
+
+      - name: Upload Signature signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.create-signature.outputs.signature }}.gpg
+          asset_name: ${{ steps.create-signature.outputs.label }}.signature.gpg
+          asset_content_type: application/octet-stream

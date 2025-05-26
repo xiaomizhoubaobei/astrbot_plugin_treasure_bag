@@ -2,9 +2,12 @@ name: Publish Python Package to PyPI
 
 on:
   push:
-    branches: [ "master" ]
+  #   branches: [ "master" ]
+  # pull_request:
+  #   branches: [ "master" ]
+      branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
