@@ -5,9 +5,9 @@ name: Python Dependency Audit
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   schedule:
     - cron: '0 0 * * 0'  # 每周日 00:00 UTC
 

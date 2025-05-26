@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="astrbot_plugin_treasure_bag_plugin",
-    version="0.0.2",
+    version="0.0.1",
     description="一个用于 astrbot 的宝藏袋插件",
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type='text/markdown',

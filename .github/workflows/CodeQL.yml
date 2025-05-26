@@ -2,9 +2,9 @@ name: "CodeQL Multi-Environment Analysis"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   schedule:
     - cron: '16 15 * * 0'
 

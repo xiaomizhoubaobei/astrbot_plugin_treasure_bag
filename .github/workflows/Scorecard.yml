@@ -10,7 +10,7 @@
    schedule: 
      - cron: '23 1 * * 1' 
    push: 
-     branches: [ "main" ] 
+     branches: [ "master" ] 
  
  # 声明默认权限为只读。 
  permissions: read-all 

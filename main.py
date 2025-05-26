@@ -12,7 +12,7 @@ from .chengyu_plugin import chengyu_query
 from .sad_word_handler import get_sad_word 
 from .xingzuo_handler import get_xingzuo_info
 
-@register("TreasureBag", "祁筱欣", "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。", "1.1.3")
+@register("TreasureBag", "祁筱欣", "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。", "0.0.1")
 class HitokotoPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
