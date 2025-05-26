@@ -42,7 +42,7 @@ jobs:
       - name: Extract Version
         id: extract_version
         run: |
-          filename=$(ls dist/astrbot_plugin_treasure_bag_plugin-*.whl)
+          filename=$(ls dist/astrbot_plugin_treasure_bag-*.whl)
           version=$(echo $filename | sed -e 's/.*-\([0-9]*\.[0-9]*\.[0-9]*\)-py3-none-any\.whl/\1/')
           echo "version=$version" >> $GITHUB_ENV
 
