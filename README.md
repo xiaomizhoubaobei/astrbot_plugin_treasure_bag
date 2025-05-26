@@ -1,5 +1,7 @@
 # Treasure Bag Plugin
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/081cc86660904596b38a8e9b3b640d42)](https://app.codacy.com/gh/xiaomizhoubaobei/astrbot_plugin_treasure_bag?utm_source=github.com&utm_medium=referral&utm_content=xiaomizhoubaobei/astrbot_plugin_treasure_bag&utm_campaign=Badge_Grade)
+
 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
 
 ## 功能详情
