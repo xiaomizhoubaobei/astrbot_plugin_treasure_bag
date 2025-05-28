@@ -1,0 +1,41 @@
+name: Publish Python Package to PyPI
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine build
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+      with:
+        repository-url: https://upload.pypi.org/legacy/
+        attestations: true
+        # username: __token__
+        # password: ${{ secrets.PYPI_PASSWORD }}
+        print-hash: true

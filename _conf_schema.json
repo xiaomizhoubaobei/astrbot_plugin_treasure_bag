@@ -1,0 +1,37 @@
+{
+    "admins": {
+      "description": "管理员QQ号列表",
+      "type": "list",
+      "items": {
+        "type": "string"
+      },
+      "hint": "在此添加有权限管理投票插件的QQ号",
+      "default": [
+          "2923597244"
+      ]
+    },
+    "baidu_api_key": {
+      "description": "百度AI开放平台 API Key",
+      "type": "string",
+      "hint": "请输入您的百度AI开放平台应用的API Key",
+      "default": ""
+    },
+    "baidu_secret_key": {
+      "description": "百度AI开放平台 Secret Key",
+      "type": "string",
+      "hint": "请输入您的百度AI开放平台应用的Secret Key",
+      "default": ""
+    },
+    "aliyun_access_key_id": {
+      "description": "阿里云AccessKey ID",
+      "type": "string",
+      "hint": "请输入您的阿里云AccessKey ID",
+      "default": ""
+    },
+    "aliyun_access_key_secret": {
+      "description": "阿里云AccessKey Secret",
+      "type": "string",
+      "hint": "请输入您的阿里云AccessKey Secret",
+      "default": ""
+    }
+  }

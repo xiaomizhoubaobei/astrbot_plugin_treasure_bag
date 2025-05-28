@@ -1,0 +1,240 @@
+name: Python Project Release & Sign
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+permissions:
+  id-token: write
+  attestations: write
+
+jobs:
+  release_and_sign:
+    runs-on: ubuntu-latest
+    name: Release And Sign
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Find built packages
+        id: find_packages
+        run: |
+          SDIST_FILE=$(ls dist/*.tar.gz)
+          WHEEL_FILE=$(ls dist/*.whl)
+          echo "sdist_file=$SDIST_FILE" >> $GITHUB_OUTPUT
+          echo "wheel_file=$WHEEL_FILE" >> $GITHUB_OUTPUT
+
+      - name: Generate SHA256 Hashes
+        run: |
+          sha256sum ${{ steps.find_packages.outputs.sdist_file }} > SHA256SUMS
+          sha256sum ${{ steps.find_packages.outputs.wheel_file }} >> SHA256SUMS
+
+      - name: Zip Hash File
+        run: zip hashes.zip SHA256SUMS
+
+      - name: Extract Version
+        id: extract_version
+        run: |
+          filename=$(ls dist/astrbot_plugin_treasure_bag-*.whl)
+          version=$(echo $filename | sed -e 's/.*-\([0-9]*\.[0-9]*\.[0-9]*\)-py3-none-any\.whl/\1/')
+          echo "version=$version" >> $GITHUB_ENV
+
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: '${{ steps.find_packages.outputs.sdist_file }}'
+
+      - name: Generate Generic Attestation
+        uses: actions/attest@v2
+        with:
+          subject-path: '${{ steps.find_packages.outputs.sdist_file }}'
+          predicate-type: 'https://example.com/predicate/v1'
+          predicate: '{"example":"predicate"}'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Import GPG Key
+        run: echo "$PGP_PRIVATE_KEY" | gpg --batch --yes --pinentry-mode loopback --import
+        env:
+          PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Install dependencies
+        run: pip install pip-licenses
+
+      - name: Generate Python SBOM
+        uses: CycloneDX/gh-python-generate-sbom@v2
+        with:
+          input: ./requirements.txt
+          output: ./sbom.json
+          format: json
+
+      - name: Create Electronic Signature
+        uses: shrink/actions-document-sign@v1
+        id: create-signature
+        with:
+          destination: .signature
+          template: cute.html
+          primary: '#1e7e34'
+          secondary: '#2f80ed'
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Upload Signature
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.create-signature.outputs.label }}.signature
+          path: ${{ steps.create-signature.outputs.signature }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: v${{ env.version }}
+          name: Release v${{ env.version }}
+          body: |
+            🎉 发布新版本${{ env.version }} 🎉
+
+            这是我们新版本${{ env.version }}的发布说明。本次发布包含了以下更改：
+
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+
+      - name: Upload sdist package to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_packages.outputs.sdist_file }}
+          asset_name: $(basename ${{ steps.find_packages.outputs.sdist_file }})
+          asset_content_type: application/gzip
+
+      - name: Upload wheel package to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_packages.outputs.wheel_file }}
+          asset_name: $(basename ${{ steps.find_packages.outputs.wheel_file }})
+          asset_content_type: application/zip
+
+      - name: Upload Signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.create-signature.outputs.signature }}
+          asset_name: ${{ steps.create-signature.outputs.label }}.signature
+          asset_content_type: application/octet-stream
+
+      - name: Upload SBOM to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sbom.json
+          asset_name: sbom.json
+          asset_content_type: application/json
+
+      - name: Upload Hashes to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: hashes.zip
+          asset_name: hashes.zip
+          asset_content_type: application/zip
+
+      - name: Sign sdist package
+        run: echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output ${{ steps.find_packages.outputs.sdist_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.sdist_file }}
+        env:
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Sign wheel package
+        run: echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output ${{ steps.find_packages.outputs.wheel_file }}.gpg --detach-sign ${{ steps.find_packages.outputs.wheel_file }}
+        env:
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Upload sdist signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_packages.outputs.sdist_file }}.gpg
+          asset_name: $(basename ${{ steps.find_packages.outputs.sdist_file }}.gpg)
+          asset_content_type: application/octet-stream
+
+      - name: Upload wheel signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_packages.outputs.wheel_file }}.gpg
+          asset_name: $(basename ${{ steps.find_packages.outputs.wheel_file }}.gpg)
+          asset_content_type: application/octet-stream
+
+      - name: Sign SBOM
+        run: echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output sbom.json.gpg --detach-sign sbom.json
+        env:
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Sign Hashes
+        run: echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output hashes.zip.gpg --detach-sign hashes.zip
+        env:
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Sign Signature
+        run: echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output ${{ steps.create-signature.outputs.signature }}.gpg --detach-sign ${{ steps.create-signature.outputs.signature }}
+        env:
+          GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+
+      - name: Upload SBOM signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sbom.json.gpg
+          asset_name: sbom.json.gpg
+          asset_content_type: application/octet-stream
+
+      - name: Upload Hashes signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: hashes.zip.gpg
+          asset_name: hashes.zip.gpg
+          asset_content_type: application/octet-stream
+
+      - name: Upload Signature signature to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.create-signature.outputs.signature }}.gpg
+          asset_name: ${{ steps.create-signature.outputs.label }}.signature.gpg
+          asset_content_type: application/octet-stream

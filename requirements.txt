@@ -1,0 +1,7 @@
+aiohttp
+ruff
+sqlalchemy
+pymysql
+flake8
+bandit
+httpx
