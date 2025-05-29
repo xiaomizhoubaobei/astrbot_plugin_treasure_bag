@@ -2,15 +2,8 @@
  
  name: Scorecard supply-chain security 
  on: 
-   # 用于分支保护检查。仅支持默认分支。请参阅 
-   # `https://github.com/ossf/scorecard/blob/main/docs/checks.md#branch-protection` 
-   branch_protection_rule: 
-   # 为确保维护检查偶尔更新。请参阅 
-   # `https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained` 
-   schedule: 
-     - cron: '23 1 * * 1' 
-   push: 
-     branches: [ "CI" ] 
+   pull_request:
+     branches: [ "master" ]
  
  # 声明默认权限为只读。 
  permissions: read-all 

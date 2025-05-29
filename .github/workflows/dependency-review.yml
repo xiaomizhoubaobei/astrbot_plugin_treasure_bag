@@ -10,7 +10,7 @@
 name: '依赖项审查'
 on:
   pull_request:
-    branches: [ "CI" ]
+    branches: [ "master" ]
 
 # 如果在此工作流中使用依赖项提交操作，则需要将此权限设置为:
 #

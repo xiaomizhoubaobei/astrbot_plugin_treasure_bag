@@ -4,10 +4,10 @@
 name: Python Dependency Audit
 
 on:
-  push:
-    branches: [ "CI" ]
+  pull_request:
+    branches: [ "master" ]
   schedule:
-    - cron: '0 0 * * 0'  # 每周日 00:00 UTC
+    - cron: '0 0 * * 0'
 
 permissions:
   contents: read
