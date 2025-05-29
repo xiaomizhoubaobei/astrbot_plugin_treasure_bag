@@ -1,7 +1,9 @@
 name: Sync to Gitcode
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - master
 
