@@ -1,4 +1,3 @@
-from nturl2path import url2pathname
 from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
@@ -13,7 +12,6 @@ from .chengyu_plugin import chengyu_query
 from .sad_word_handler import get_sad_word 
 from .xingzuo_handler import get_xingzuo_info
 from .weather_handler import get_weather
-from .meme_handler import get_meme_image
 
 @register("TreasureBag", "祁筱欣", "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。", "0.0.2")
 class HitokotoPlugin(Star):
@@ -99,11 +97,6 @@ class HitokotoPlugin(Star):
         else:
             logger.error(f"获取美女图片失败，返回内容不符合预期: {image_url}")
             yield event.plain_result("获取图片失败了，请稍后再试试吧。")
-    @filter.command("create_meme")
-    async def create_meme_command(self, event: AstrMessageEvent):
-        """生成表情包。用法：/create_meme [QQ号] [类型]"""
-        image_url = await get_meme_image(event)
-        yield event.image_result(image_url)
 
 
     @filter.command("idiom_query")
@@ -138,12 +131,6 @@ class HitokotoPlugin(Star):
         city_name = message_parts[1].strip()
         yield await get_weather(event, city_name)
 
-    @filter.command("emoji",aliases={"表情包"})
-    async def emoji_command(self,event:AstrMessageEvent):
-        """发送表情包"""
-        url= get_meme_image(event)
-        yield event_image_result(url)
-
     @filter.command("treasurebag-help")
     async def help_command(self, event: AstrMessageEvent):
         """显示插件帮助信息。"""
@@ -161,7 +148,6 @@ class HitokotoPlugin(Star):
         9. /今日运势 [星座名称] (或 /星座运势 [星座名称]) - 查询星座运势 (例如: /今日运势 白羊座)
         10. /alirate_beauty - 发送人像图片获取来自阿里的颜值评分
         11. /weather [城市名称] (或 /天气 [城市名称]) - 查询天气 (例如: /weather 北京)
-        12. /create_meme [QQ号] [类型] - 生成表情包 (例如: /create_meme 123456 2)
         13. /treasurebag-help - 显示此帮助信息
         """
         yield event.plain_result(help_text)
