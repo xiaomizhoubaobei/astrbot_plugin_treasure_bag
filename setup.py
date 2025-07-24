@@ -1,10 +1,15 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+# 使用更健壮的方式读取README文件
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 setup(
     name="astrbot_plugin_treasure_bag",
     version="0.0.2",
     description="一个用于 astrbot 的宝藏袋插件",
-    long_description=open('README.md', encoding='utf-8').read(),
+    long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin",
     author="祁筱欣", # Replace with your name
@@ -22,11 +27,10 @@ setup(
     ],
     project_urls={
         "Homepage": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin",
-        "Download": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_pluginn/releases",
+        "Download": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin/releases",
         "Issues": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin/issues",
         "Bug": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin/issues",
         "GitHub": "https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag_plugin",
         "Twitter": "https://x.com/XinXiao12088",
-        "Pypi": "https://pypi.org/project/astrbot_plugin_treasure_bag_plugin/",
     },
 )

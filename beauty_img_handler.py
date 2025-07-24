@@ -2,10 +2,18 @@ from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 import aiohttp
 
-async def get_beauty_image_url(event: AstrMessageEvent):
-    """获取随机美女图片 URL。"""
-    api_url = "https://v.api.aa1.cn/api/pc-girl_bz/index.php?wpon=url"
-    logger.info(f"请求随机美女图片 API: {api_url}")
+# 美女图片API地址
+BEAUTY_IMAGE_API_URL = "https://v.api.aa1.cn/api/pc-girl_bz/index.php?wpon=url"
+
+async def get_beauty_image_url() -> str | None:
+    """获取随机美女图片 URL。
+    
+    Returns:
+        str: 成功时返回图片URL
+        None: 获取失败时返回None
+    """
+    api_url = BEAUTY_IMAGE_API_URL
+    logger.info(f"请求随机美女图片 API: {BEAUTY_IMAGE_API_URL}")
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as response:
@@ -22,7 +30,7 @@ async def get_beauty_image_url(event: AstrMessageEvent):
                     return full_url
                 else:
                     logger.error(f"请求 API 失败，状态码: {response.status}")
-                    return event.plain_result("获取图片失败，请稍后再试。")
+                    return None
     except Exception as e:
         logger.error(f"请求 API 时发生错误: {e}")
-        return event.plain_result("获取图片时发生网络错误，请稍后再试。")
+        return None

@@ -1,7 +1,9 @@
 import httpx
-from astrbot.api.event import filter, AstrMessageEvent
-from astrbot.api.star import Context, Star, register
+from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
+
+# 定义API URL常量
+XINGZUO_API_BASE_URL = "https://v.api.aa1.cn/api/xingzuo/"
 
 desc_map = {
     "xz": "星座",
@@ -18,7 +20,7 @@ desc_map = {
 
 async def get_xingzuo_info(event: AstrMessageEvent, prompt: str):
     """获取星座运势信息。"""
-    api_url = f"https://v.api.aa1.cn/api/xingzuo/?msg={prompt}"
+    api_url = f"{XINGZUO_API_BASE_URL}?msg={prompt}"
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(api_url)

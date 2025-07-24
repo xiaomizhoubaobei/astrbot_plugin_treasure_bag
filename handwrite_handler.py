@@ -7,7 +7,7 @@ async def get_handwritten_image(event: AstrMessageEvent, text: str):
     """根据用户提供的文本生成手写样式的图片。"""
     if not text:
         logger.warning("手写图片生成请求文本为空")
-        return event.plain_result("请输入要生成手写图片的文字内容，例如：handwrite 你好呀")
+        return None
 
     # 确保文本已进行 URL 编码
     encoded_text = quote(text)

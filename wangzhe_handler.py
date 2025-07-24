@@ -2,12 +2,15 @@ from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 import aiohttp
 
+# 定义API URL常量
+WANGZHE_API_BASE_URL = "https://zj.v.api.aa1.cn/api/wz/"
+
 async def get_wangzhe_info(event: AstrMessageEvent, hero_name: str):
     """查询王者荣耀英雄资料。"""
     if not hero_name:
         return event.plain_result("请输入要查询的英雄名称，例如：王者 亚瑟")
 
-    api_url = f"https://zj.v.api.aa1.cn/api/wz/?msg={hero_name}"
+    api_url = f"{WANGZHE_API_BASE_URL}?msg={hero_name}"
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as resp:

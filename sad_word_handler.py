@@ -2,10 +2,13 @@ import httpx
 from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 
+# 定义API URL常量
+SAD_WORD_API_URL = "https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json"
+
 
 async def get_sad_word(event: AstrMessageEvent):
         """获取一条伤感语录。"""
-        api_url = "https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json"
+        api_url = SAD_WORD_API_URL
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(api_url)
