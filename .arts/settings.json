@@ -1,0 +1,4 @@
+{
+    "python.django.project.supportEnabled": true,
+    "python.missingDependencies.doNotShow": true
+}

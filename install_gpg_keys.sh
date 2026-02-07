@@ -46,6 +46,30 @@ git config --global user.signingkey "$KEY_ID"
 git config --global commit.gpgsign true
 git config --global gpg.program "$(command -v gpg)"
 
+# 6.1 从私钥文件解析用户信息并设置 Git 提交者信息
+echo "==> 解析用户信息并设置 Git 提交者信息..."
+# 从 :user ID packet: "Name <email>" 格式中提取用户信息
+USER_INFO=$(gpg --list-packets "$PRIVATE_KEY_FILE" 2>/dev/null | grep ":user ID packet:" | head -1 | sed 's/.*:user ID packet: "\(.*\)"/\1/')
+if [ -n "$USER_INFO" ]; then
+    # 格式通常是 "Name <email@example.com>"
+    GIT_COMMITTER_NAME=祁筱欣
+    GIT_COMMITTER_EMAIL=$(echo "$USER_INFO" | grep -o '<[^>]*>' | sed 's/[<>]//g')
+    
+    if [ -n "$GIT_COMMITTER_NAME" ] && [ -n "$GIT_COMMITTER_EMAIL" ]; then
+        echo "==> 设置 Git 提交者信息: $GIT_COMMITTER_NAME <$GIT_COMMITTER_EMAIL>"
+        export GIT_COMMITTER_NAME="$GIT_COMMITTER_NAME"
+        export GIT_COMMITTER_EMAIL="$GIT_COMMITTER_EMAIL"
+        
+        # 持久化到 bashrc
+        grep -qxF "export GIT_COMMITTER_NAME=\"$GIT_COMMITTER_NAME\"" ~/.bashrc || echo "export GIT_COMMITTER_NAME=\"$GIT_COMMITTER_NAME\"" >>~/.bashrc
+        grep -qxF "export GIT_COMMITTER_EMAIL=\"$GIT_COMMITTER_EMAIL\"" ~/.bashrc || echo "export GIT_COMMITTER_EMAIL=\"$GIT_COMMITTER_EMAIL\"" >>~/.bashrc
+    else
+        echo "⚠️  无法从私钥文件中解析完整的用户信息"
+    fi
+else
+    echo "⚠️  无法从私钥文件中解析用户信息"
+fi
+
 # 7. 持久化 GPG_TTY
 grep -qxF 'export GPG_TTY=$(tty)' ~/.bashrc || echo 'export GPG_TTY=$(tty)' >>~/.bashrc
 export GPG_TTY=$(tty)
@@ -58,7 +82,6 @@ rm -f "$PRIVATE_KEY_FILE" "$PUBLIC_KEY_FILE"
 
 # 10. 非交互签名测试
 echo "==> 测试 GPG 签名..."
-TEST_RESULT=
 TEST_RESULT=$(echo "hello GPG" | gpg --clearsign 2>/dev/null)
 if grep -q "BEGIN PGP SIGNED MESSAGE" <<<"$TEST_RESULT"; then
     echo "✅ 签名测试通过，GPG 已就绪。"
