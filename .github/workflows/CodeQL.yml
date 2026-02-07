@@ -3,8 +3,12 @@ name: "代码质量分析"
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '**.py'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - '**.py'
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
