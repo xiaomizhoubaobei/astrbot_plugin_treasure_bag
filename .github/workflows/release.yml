@@ -32,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: '3.11'
+          python-version: '3.14'
 
       # 3. 获取版本号
       - name: Get version
@@ -51,22 +51,26 @@ jobs:
       # 5. 创建插件目录
       - name: Create plugin directory
         run: |
-          mkdir -p astrbot_plugin_models_ai
+          mkdir -p astrbot_plugin_treasure_bag
 
       # 6. 复制插件文件到构建目录
       - name: Copy plugin files
         run: |
           # 复制主程序文件
-          cp main.py astrbot_plugin_models_ai/
-          # 复制配置文件、依赖文件、LICENSE、logo.png 和 README.md
-          cp *.json *.yaml *.txt LICENSE logo.png README.md astrbot_plugin_models_ai/
+          cp main.py astrbot_plugin_treasure_bag/
+          # 复制配置文件和依赖文件
+          cp metadata.yaml requirements.txt astrbot_plugin_treasure_bag/ || true
+          # 复制所有处理器文件
+          cp *_handler.py command_utils.py astrbot_plugin_treasure_bag/ || true
+          # 复制 logo 文件
+          cp logo.png astrbot_plugin_treasure_bag/ || true
           # 复制子目录
-          cp -r commands core gitee llm_tools astrbot_plugin_models_ai/
+          cp -r baidu astrbot_plugin_treasure_bag/ || true
 
       # 7. 打包为 zip 文件
       - name: Create zip package
         run: |
-          zip -r astrbot_plugin_models_ai.zip astrbot_plugin_models_ai/
+          zip -r astrbot_plugin_treasure_bag.zip astrbot_plugin_treasure_bag/
 
       # 8. 生成 Release Notes
       - name: Generate Release Notes
@@ -77,7 +81,7 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            NOTES="## 🎉 首次发布这是 AstrBot AI 图像生成插件的首次正式发布。"
+            NOTES="## 🎉 首次发布这是 AstrBot 百宝袋插件的首次正式发布。"
           else
             NOTES="## 📝 更新日志\n### 本次更新了\n### $(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s" --no-merges | sed 's/^[a-z-]*: //')"
           fi
@@ -114,7 +118,7 @@ jobs:
 
             本 Release 包含以下文件：
 
-            - **astrbot_plugin_models_ai-*.zip**: 插件安装包
+            - **astrbot_plugin_treasure_bag-*.zip**: 插件安装包
             - **evidence-bundle.tar.gz**: CI 证据包（包含源代码、Git 元数据、依赖项、SBOM 等）
             - **evidence-bundle.tar.gz.sig**: 证据包的 Sigstore 签名
             - **evidence-bundle.tar.gz.crt**: 证据包的签名证书
@@ -127,7 +131,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            astrbot_plugin_models_ai.zip
+            astrbot_plugin_treasure_bag.zip
             _evidence_dist/*.tar.gz
             _evidence_dist/*.sig
             _evidence_dist/*.crt
