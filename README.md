@@ -7,11 +7,40 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/releases)
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
 ![GitHub last commit](https://img.shields.io/github/last-commit/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
-[![Python Version](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
+![Python Version](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![Code Review](https://img.shields.io/badge/code_review-100%25-brightgreen.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/xiaomizhoubaobei/astrbot_plugin_treasure_bag.svg)
 
 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
+
+## 目录结构
+
+```
+百宝袋插件目录结构:
+├── main.py               # 插件主入口点 (在根目录!)
+├── metadata.yaml         # 插件元数据
+├── requirements.txt      # 依赖项
+├── README.md            # 说明文档
+├── __init__.py          # 包入口
+├── handlers/            # 功能处理器模块
+│   ├── __init__.py
+│   ├── hitokoto_handler.py      # 一言功能
+│   ├── beauty_img_handler.py    # 美女图片功能
+│   ├── handwrite_handler.py     # 手写体功能
+│   ├── sad_word_handler.py      # 伤感语录功能
+│   ├── wangzhe_handler.py       # 王者荣耀功能
+│   ├── xingzuo_handler.py       # 星座运势功能
+│   └── weather_handler.py       # 天气功能
+├── baidu/               # 百度API相关
+│   ├── __init__.py
+│   ├── baidu_auth.py            # 百度认证管理
+│   └── beauty_handler.py        # 颜值评分功能
+├── utils/               # 工具函数
+│   ├── __init__.py
+│   └── command_utils.py         # 命令处理工具
+└── config/              # 配置相关
+    └── __init__.py
+```
 
 ## 功能详情
 - 获取随机一言语录：从精选一言库中随机返回一条语录 (保留功能)
@@ -24,13 +53,6 @@
 - Python 3.8+
 - AstrBot框架
 - 百度AI开放平台API Key（用于颜值评分功能）
-
-## 功能
-- 获取随机一言语录
-- 通过图片分析颜值评分
-- 查询王者荣耀英雄资料
-- 生成手写样式的图片
-- 获取随机美女图片
 
 ## 命令列表
 1. /hitokoto - 获取一条一言
@@ -79,5 +101,9 @@
 
 ## 支持
 如有问题，请参考[官方文档](https://astrbot.app)或联系开发者。
+
+## 更新日志
+完整的历史版本记录请查看 [CHANGELOG.md](./CHANGELOG.md)
+
 ## 审计
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_large&issueType=license)

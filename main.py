@@ -2,15 +2,15 @@ from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 from astrbot.core import AstrBotConfig
-from .hitokoto_handler import get_hitokoto
+from .handlers.hitokoto_handler import get_hitokoto
 from .baidu.beauty_handler import get_beauty_score
 from .baidu.baidu_auth import init_baidu_credentials
-from .wangzhe_handler import wangzhe_command
-from .handwrite_handler import handwrite_command
-from .beauty_img_handler import beauty_img_command
-from .sad_word_handler import get_sad_word
-from .xingzuo_handler import xingzuo_command
-from .weather_handler import weather_command
+from .handlers.wangzhe_handler import wangzhe_command
+from .handlers.handwrite_handler import handwrite_command
+from .handlers.beauty_img_handler import beauty_img_command
+from .handlers.sad_word_handler import get_sad_word
+from .handlers.xingzuo_handler import xingzuo_command
+from .handlers.weather_handler import weather_command
 
 @register("TreasureBag", "祁筱欣", "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。", "0.0.2")
 class TreasureBagPlugin(Star):
