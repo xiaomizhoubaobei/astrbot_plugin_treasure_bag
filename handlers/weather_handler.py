@@ -6,17 +6,17 @@ import json
 
 async def weather_command(event: AstrMessageEvent):
     """查询天气。用法：/weather [城市名称]"""
-    message_parts = event.message_str.split(' ', 1)
+    message_parts = event.message_str.split(" ", 1)
     if len(message_parts) < 2 or not message_parts[1].strip():
         yield event.plain_result("请输入要查询的城市名称，例如：/weather 北京")
         return
-    
+
     city = message_parts[1].strip()
     try:
         url = "https://api.lolimi.cn/API/weather/api.php"
         params = {
-            'city': city,
-            'type': 'json',
+            "city": city,
+            "type": "json",
         }
         logger.info(f"请求天气 API, URL: {url}, 参数: {params}")
         async with aiohttp.ClientSession() as session:
@@ -28,7 +28,7 @@ async def weather_command(event: AstrMessageEvent):
                         logger.error(f"解析天气 API 返回的 JSON 数据失败: {e}")
                         yield event.plain_result("抱歉，解析天气数据时出错了。")
                         return
-                    
+
                     if xydata.get("code") == 1:
                         data = xydata.get("data")
                         weather = data.get("weather")
@@ -42,7 +42,9 @@ async def weather_command(event: AstrMessageEvent):
                         air = current.get("air")
                         air_pm25 = current.get("air_pm25")
                         living = data.get("living")
-                        living_tips = "\n".join([f"{item['name']}: {item['tips']}" for item in living])
+                        living_tips = "\n".join(
+                            [f"{item['name']}: {item['tips']}" for item in living]
+                        )
 
                         response_text = (
                             f"城市: {city}\n"

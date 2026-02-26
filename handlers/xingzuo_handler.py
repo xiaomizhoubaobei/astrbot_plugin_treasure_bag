@@ -24,7 +24,7 @@ async def xingzuo_command(event: AstrMessageEvent, xingzuo_name: str = None):
     if not xingzuo_name:
         yield event.plain_result("请输入要查询的星座名称，例如：/今日运势 白羊座")
         return
-    
+
     prompt = xingzuo_name.strip()
     api_url = f"{XINGZUO_API_BASE_URL}?msg={prompt}"
     try:
@@ -34,7 +34,9 @@ async def xingzuo_command(event: AstrMessageEvent, xingzuo_name: str = None):
             data = response.json()
 
             if data.get("code") == -1 or data.get("msg") == "数据不存在":
-                yield event.plain_result(data.get("msg", "无法查询到该星座的运势信息。"))
+                yield event.plain_result(
+                    data.get("msg", "无法查询到该星座的运势信息。")
+                )
                 return
 
             if data.get("code") == 1 and data.get("msg") == "查询成功":
@@ -42,15 +44,21 @@ async def xingzuo_command(event: AstrMessageEvent, xingzuo_name: str = None):
                 for key, value in data.items():
                     if key in desc_map:
                         result_parts.append(f"{desc_map[key]}: {value}")
-                
+
                 if result_parts:
                     yield event.plain_result("\n".join(result_parts))
                 else:
-                    logger.warning(f"XingzuoHandler: Successful API call but no relevant data found. API Response: {data}")
+                    logger.warning(
+                        f"XingzuoHandler: Successful API call but no relevant data found. API Response: {data}"
+                    )
                     yield event.plain_result("查询成功，但未能解析出有效的运势信息。")
             else:
-                logger.error(f"XingzuoHandler: Unexpected API response format. API Response: {data}")
-                yield event.plain_result("抱歉，获取星座运势失败，API响应未知或包含错误。")
+                logger.error(
+                    f"XingzuoHandler: Unexpected API response format. API Response: {data}"
+                )
+                yield event.plain_result(
+                    "抱歉，获取星座运势失败，API响应未知或包含错误。"
+                )
 
     except httpx.HTTPStatusError as e:
         logger.error(f"XingzuoHandler: HTTP error occurred: {e}")

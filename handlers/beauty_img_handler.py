@@ -8,7 +8,7 @@ BEAUTY_IMAGE_API_URL = "https://v.api.aa1.cn/api/pc-girl_bz/index.php?wpon=url"
 
 async def _get_beauty_image_url() -> str | None:
     """获取随机美女图片 URL。
-    
+
     Returns:
         str: 成功时返回图片URL
         None: 获取失败时返回None

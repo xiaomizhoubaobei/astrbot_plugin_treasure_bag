@@ -12,7 +12,13 @@ from .handlers.sad_word_handler import get_sad_word
 from .handlers.xingzuo_handler import xingzuo_command
 from .handlers.weather_handler import weather_command
 
-@register("TreasureBag", "祁筱欣", "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。", "0.0.2")
+
+@register(
+    "TreasureBag",
+    "祁筱欣",
+    "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。",
+    "0.0.2",
+)
 class TreasureBagPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
@@ -45,7 +51,9 @@ class TreasureBagPlugin(Star):
         async for result in handwrite_command(event):
             yield result
 
-    @filter.command("beauty_img", aliases=["random_beauty", "daily_beauty", "random_beauty_image"])
+    @filter.command(
+        "beauty_img", aliases=["random_beauty", "daily_beauty", "random_beauty_image"]
+    )
     async def beauty_img_command(self, event: AstrMessageEvent):
         """获取一张随机美女图片。"""
         async for result in beauty_img_command(event):
