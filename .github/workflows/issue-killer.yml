@@ -42,7 +42,7 @@ jobs:
 
       - name: 获取 Issue 详情
         id: get_issue
-        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
+        uses: 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -170,7 +170,7 @@ jobs:
       - name: '发布实现失败评论'
         if: |-
           ${{ failure() && steps.iflow_cli_implementation.outcome == 'failure' }}
-        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
+        uses: 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd'
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           script: |-
