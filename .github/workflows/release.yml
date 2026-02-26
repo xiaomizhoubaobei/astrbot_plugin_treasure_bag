@@ -5,7 +5,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**/*.py'
   workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -24,15 +29,15 @@ jobs:
 
       # 1. 检出代码
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0  # 获取完整的 git 历史
 
       # 2. 设置 Python 环境
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
         with:
-          python-version: '3.14'
+          python-version: '3.12'
 
       # 3. 获取版本号
       - name: Get version
@@ -78,16 +83,132 @@ jobs:
         run: |
           # 从上一个标签生成 Release Notes
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=${{ steps.get_version.outputs.version }}
+
+          # 定义生成更新日志的函数
+          generate_changelog_from_git() {
+            local PREVIOUS_TAG=$1
+            local VERSION=$2
+            
+            # 初始化分类
+            local FEAT=""
+            local FIX=""
+            local REFACTOR=""
+            local DOCS=""
+            local TEST=""
+            local STYLE=""
+            local CHORE=""
+            local PERF=""
+            local CI=""
+            local BUILD=""
+            local OTHER=""
+            
+            # 遍历所有 commit
+            while IFS= read -r commit; do
+              # 提取 commit 类型和消息
+              type=$(echo "$commit" | sed -n 's/^\([a-z]*\):.*/\1/p')
+              msg=$(echo "$commit" | sed 's/^[a-z]*: *//')
+              
+              # 按类型分类
+              case "$type" in
+                feat)    FEAT="${FEAT}- ${msg}\n" ;;
+                fix)     FIX="${FIX}- ${msg}\n" ;;
+                refactor) REFACTOR="${REFACTOR}- ${msg}\n" ;;
+                docs)    DOCS="${DOCS}- ${msg}\n" ;;
+                test)    TEST="${TEST}- ${msg}\n" ;;
+                style)   STYLE="${STYLE}- ${msg}\n" ;;
+                chore)   CHORE="${CHORE}- ${msg}\n" ;;
+                perf)    PERF="${PERF}- ${msg}\n" ;;
+                ci)      CI="${CI}- ${msg}\n" ;;
+                build)   BUILD="${BUILD}- ${msg}\n" ;;
+                *)       OTHER="${OTHER}- ${msg}\n" ;;
+              esac
+            done < <(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"%s" --no-merges)
+            
+            # 构建更新日志
+            NOTES="## 📦 Release v${VERSION}\n\n"
+            
+            # 添加各个分类
+            if [ -n "$FEAT" ]; then
+              NOTES="${NOTES}### ✨ 新功能\n\n${FEAT}\n"
+            fi
+            
+            if [ -n "$FIX" ]; then
+              NOTES="${NOTES}### 🐛 修复\n\n${FIX}\n"
+            fi
+            
+            if [ -n "$PERF" ]; then
+              NOTES="${NOTES}### ⚡ 性能优化\n\n${PERF}\n"
+            fi
+            
+            if [ -n "$REFACTOR" ]; then
+              NOTES="${NOTES}### ♻️ 重构\n\n${REFACTOR}\n"
+            fi
+            
+            if [ -n "$DOCS" ]; then
+              NOTES="${NOTES}### 📝 文档\n\n${DOCS}\n"
+            fi
+            
+            if [ -n "$TEST" ]; then
+              NOTES="${NOTES}### ✅ 测试\n\n${TEST}\n"
+            fi
+            
+            if [ -n "$STYLE" ]; then
+              NOTES="${NOTES}### 💄 样式\n\n${STYLE}\n"
+            fi
+            
+            if [ -n "$CI" ]; then
+              NOTES="${NOTES}### 👷 CI\n\n${CI}\n"
+            fi
+            
+            if [ -n "$BUILD" ]; then
+              NOTES="${NOTES}### 📦 构建\n\n${BUILD}\n"
+            fi
+            
+            if [ -n "$CHORE" ]; then
+              NOTES="${NOTES}### 🔧 杂项\n\n${CHORE}\n"
+            fi
+            
+            if [ -n "$OTHER" ]; then
+              NOTES="${NOTES}### 其他\n\n${OTHER}\n"
+            fi
+            
+            # 如果没有任何提交
+            if [ "$NOTES" = "## 📦 Release v${VERSION}\n\n" ]; then
+              NOTES="${NOTES}无更新内容\n"
+            fi
+            
+            echo -e "$NOTES"
+          }
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            NOTES="## 🎉 首次发布这是 AstrBot 百宝袋插件的首次正式发布。"
+            # 首次发布
+            NOTES="## 🎉 首次发布 v${VERSION}\n\n这是 beta_dxl_bert_vits 插件的首次正式发布。\n\n### 功能特性\n\n- 请参考项目 README.md 了解功能详情\n\n### 使用方法\n\n请参考项目 README.md 了解详细使用方法。"
           else
-            NOTES="## 📝 更新日志\n### 本次更新了\n### $(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s" --no-merges | sed 's/^[a-z-]*: //')"
+            # 检查是否存在 CHANGELOG.md
+            if [ -f "CHANGELOG.md" ]; then
+              # 从 CHANGELOG.md 提取当前版本的更新内容
+              CHANGELOG_CONTENT=$(awk -v version="\\[${VERSION}\\]" '$0 ~ version {found=1} found {print} found && /^## / && !($0 ~ version) {exit}' CHANGELOG.md | tail -n +2)
+              
+              if [ -n "$CHANGELOG_CONTENT" ]; then
+                NOTES="## 📦 Release v${VERSION}\n\n${CHANGELOG_CONTENT}"
+              else
+                # CHANGELOG 中没有找到当前版本，从 git log 生成
+                NOTES=$(generate_changelog_from_git "$PREVIOUS_TAG" "$VERSION")
+              fi
+            else
+              # 从 git log 生成更新日志
+              NOTES=$(generate_changelog_from_git "$PREVIOUS_TAG" "$VERSION")
+            fi
           fi
 
+          # 添加发布说明
+          RELEASE_FOOTER="\n\n---\n\n### 📥 安装方法\n\n\`\`\`bash\n# 下载插件包后，将其放入 AstrBot 的 plugins 目录\n"
+          
+          NOTES="${NOTES}${RELEASE_FOOTER}"
+
           # 保存到文件
-          echo "$NOTES" > release_notes.md
+          echo -e "$NOTES" > release_notes.md
 
           # 输出到环境变量
           {
