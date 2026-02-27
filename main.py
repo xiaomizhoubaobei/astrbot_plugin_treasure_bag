@@ -13,12 +13,6 @@ from .handlers.xingzuo_handler import xingzuo_command
 from .handlers.weather_handler import weather_command
 
 
-@register(
-    "TreasureBag",
-    "祁筱欣",
-    "一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。",
-    "0.0.2",
-)
 class TreasureBagPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)

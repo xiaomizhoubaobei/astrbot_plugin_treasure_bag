@@ -1,4 +1,4 @@
-name: Release Build
+name: 'Release 构建'
 
 # 触发条件：推送到 main 分支时触发或手动触发
 on:
@@ -14,74 +14,86 @@ permissions:
 
 jobs:
   build:
-    name: Build Release
+    name: 构建 Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write  # REQUIRED for signing
+      id-token: write  # 为签名所必需
 
     steps:
       # 0. 安全加固
-      - name: Harden Runner
+      - name: 加固运行器
         uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
         with:
           egress-policy: audit
 
       # 1. 检出代码
-      - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: 检出代码
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0  # 获取完整的 git 历史
 
       # 2. 设置 Python 环境
-      - name: Set up Python
-        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
+      - name: 设置 Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.12'
 
       # 3. 获取版本号
-      - name: Get version
+      - name: 获取版本
         id: get_version
         run: |
-          # 从 metadata.yaml 文件中读取版本号
+          # 从 metadata.yaml 文件中读取版本号，并移除可能存在的 'v' 前缀
           VERSION=$(grep "^version:" metadata.yaml | awk '{print $2}')
+          # 移除可能存在的 'v' 前缀以避免重复
+          VERSION=${VERSION#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag_name=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=v$VERSION" >> $GITHUB_OUTPUT
 
       # 4. 安装依赖
-      - name: Install dependencies
+      - name: 安装依赖
         run: |
-          pip install -r requirements.txt
+          if [ -f requirements.txt ] && [ -s requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt 不存在或为空，跳过依赖安装"
+          fi
 
       # 5. 创建插件目录
-      - name: Create plugin directory
+      - name: 创建插件目录
         run: |
           mkdir -p astrbot_plugin_treasure_bag
 
       # 6. 复制插件文件到构建目录
-      - name: Copy plugin files
+      - name: 复制插件文件
         run: |
+          # 创建插件目录结构
+          mkdir -p astrbot_plugin_treasure_bag
+
           # 复制主程序文件
           cp main.py astrbot_plugin_treasure_bag/
           # 复制配置文件和依赖文件
-          cp metadata.yaml requirements.txt astrbot_plugin_treasure_bag/ || true
-          # 复制所有处理器文件
-          cp *_handler.py command_utils.py astrbot_plugin_treasure_bag/ || true
-          # 复制 logo 文件
-          cp logo.png astrbot_plugin_treasure_bag/ || true
+          cp metadata.yaml requirements.txt _conf_schema.json astrbot_plugin_treasure_bag/ || true
+          # 复制所有相关模块
+          cp __init__.py astrbot_plugin_treasure_bag/ || true
           # 复制子目录
+          cp -r handlers astrbot_plugin_treasure_bag/ || true
           cp -r baidu astrbot_plugin_treasure_bag/ || true
+          cp -r utils astrbot_plugin_treasure_bag/ || true
+          cp -r config astrbot_plugin_treasure_bag/ || true
+          # 复制 logo 文件（如果存在）
+          cp logo.png astrbot_plugin_treasure_bag/ || true
 
       # 7. 打包为 zip 文件
-      - name: Create zip package
+      - name: 创建 zip 包
         run: |
           zip -r astrbot_plugin_treasure_bag.zip astrbot_plugin_treasure_bag/
 
       # 8. 生成 Release Notes
-      - name: Generate Release Notes
+      - name: 生成 Release Notes
         id: release_notes
         run: |
-          # 从上一个标签生成 Release Notes
+          # 从上一个标签生成发布说明
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           VERSION=${{ steps.get_version.outputs.version }}
 
@@ -89,7 +101,7 @@ jobs:
           generate_changelog_from_git() {
             local PREVIOUS_TAG=$1
             local VERSION=$2
-            
+
             # 初始化分类
             local FEAT=""
             local FIX=""
@@ -102,13 +114,13 @@ jobs:
             local CI=""
             local BUILD=""
             local OTHER=""
-            
+
             # 遍历所有 commit
             while IFS= read -r commit; do
               # 提取 commit 类型和消息
               type=$(echo "$commit" | sed -n 's/^\([a-z]*\):.*/\1/p')
               msg=$(echo "$commit" | sed 's/^[a-z]*: *//')
-              
+
               # 按类型分类
               case "$type" in
                 feat)    FEAT="${FEAT}- ${msg}\n" ;;
@@ -124,72 +136,72 @@ jobs:
                 *)       OTHER="${OTHER}- ${msg}\n" ;;
               esac
             done < <(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"%s" --no-merges)
-            
+
             # 构建更新日志
             NOTES="## 📦 Release v${VERSION}\n\n"
-            
+
             # 添加各个分类
             if [ -n "$FEAT" ]; then
               NOTES="${NOTES}### ✨ 新功能\n\n${FEAT}\n"
             fi
-            
+
             if [ -n "$FIX" ]; then
               NOTES="${NOTES}### 🐛 修复\n\n${FIX}\n"
             fi
-            
+
             if [ -n "$PERF" ]; then
               NOTES="${NOTES}### ⚡ 性能优化\n\n${PERF}\n"
             fi
-            
+
             if [ -n "$REFACTOR" ]; then
               NOTES="${NOTES}### ♻️ 重构\n\n${REFACTOR}\n"
             fi
-            
+
             if [ -n "$DOCS" ]; then
               NOTES="${NOTES}### 📝 文档\n\n${DOCS}\n"
             fi
-            
+
             if [ -n "$TEST" ]; then
               NOTES="${NOTES}### ✅ 测试\n\n${TEST}\n"
             fi
-            
+
             if [ -n "$STYLE" ]; then
               NOTES="${NOTES}### 💄 样式\n\n${STYLE}\n"
             fi
-            
+
             if [ -n "$CI" ]; then
               NOTES="${NOTES}### 👷 CI\n\n${CI}\n"
             fi
-            
+
             if [ -n "$BUILD" ]; then
               NOTES="${NOTES}### 📦 构建\n\n${BUILD}\n"
             fi
-            
+
             if [ -n "$CHORE" ]; then
               NOTES="${NOTES}### 🔧 杂项\n\n${CHORE}\n"
             fi
-            
+
             if [ -n "$OTHER" ]; then
               NOTES="${NOTES}### 其他\n\n${OTHER}\n"
             fi
-            
+
             # 如果没有任何提交
             if [ "$NOTES" = "## 📦 Release v${VERSION}\n\n" ]; then
               NOTES="${NOTES}无更新内容\n"
             fi
-            
+
             echo -e "$NOTES"
           }
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            # 首次发布
-            NOTES="## 🎉 首次发布 v${VERSION}\n\n这是 beta_dxl_bert_vits 插件的首次正式发布。\n\n### 功能特性\n\n- 请参考项目 README.md 了解功能详情\n\n### 使用方法\n\n请参考项目 README.md 了解详细使用方法。"
+            # 首次 Release
+            NOTES="## 🎉 首次 Release v${VERSION}\n\n这是互动游戏插件的首次正式 Release。\n\n### 功能特性\n\n- 包含猜数字、签到、抽奖、商店、成就系统等多种功能\n- 支持库存和使用物品\n- 提供用户个人资料管理\n\n### 使用方法\n\n请参考项目 README.md 了解详细使用方法。"
           else
             # 检查是否存在 CHANGELOG.md
             if [ -f "CHANGELOG.md" ]; then
               # 从 CHANGELOG.md 提取当前版本的更新内容
               CHANGELOG_CONTENT=$(awk -v version="\\[${VERSION}\\]" '$0 ~ version {found=1} found {print} found && /^## / && !($0 ~ version) {exit}' CHANGELOG.md | tail -n +2)
-              
+
               if [ -n "$CHANGELOG_CONTENT" ]; then
                 NOTES="## 📦 Release v${VERSION}\n\n${CHANGELOG_CONTENT}"
               else
@@ -202,9 +214,9 @@ jobs:
             fi
           fi
 
-          # 添加发布说明
-          RELEASE_FOOTER="\n\n---\n\n### 📥 安装方法\n\n\`\`\`bash\n# 下载插件包后，将其放入 AstrBot 的 plugins 目录\n"
-          
+          # 添加 Release Notes
+          RELEASE_FOOTER="\n\n---\n\n### 📥 安装方法\n\n\`\`\`bash\n# 下载插件包后，将其放入 AstrBot 的 plugins 目录\n# 然后重启 AstrBot 服务\n"
+
           NOTES="${NOTES}${RELEASE_FOOTER}"
 
           # 保存到文件
@@ -218,14 +230,14 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       # 9. 生成证据包
-      - name: Generate Evidence Bundle
-        if: always()  # Run even if build fails
+      - name: 生成证据包
+        if: always()  # 即使构建失败也运行
         uses: OrygnsCode/ci-evidence-pack@8222d7b3b015ce2f72222215bdf9966773036ab1 # main
         with:
           sign: 'true'
 
       # 10. 创建 GitHub Release
-      - name: Create Release
+      - name: 创建 GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{ steps.get_version.outputs.tag_name }}
