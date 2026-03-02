@@ -197,7 +197,11 @@ def generate_face_analysis_report(face_info):
     light_status = (
         "明亮"
         if illumination > 200
-        else "正常" if illumination > 100 else "较暗" if illumination > 40 else "很暗"
+        else "正常"
+        if illumination > 100
+        else "较暗"
+        if illumination > 40
+        else "很暗"
     )
 
     quality_parts = [
@@ -268,7 +272,9 @@ def generate_face_analysis_report(face_info):
         spoofing_status = (
             "真实照片"
             if spoofing_score < 0.3
-            else "可能是真实照片" if spoofing_score < 0.7 else "可能是合成图片"
+            else "可能是真实照片"
+            if spoofing_score < 0.7
+            else "可能是合成图片"
         )
         result_parts.append(
             f"  防伪检测：{spoofing_status} (得分：{spoofing_score:.2f})"
@@ -280,7 +286,7 @@ def generate_face_analysis_report(face_info):
             f"  年龄大约：{age}岁",
             f"  当前表情：{emotion}",
             f"  脸型判断：{face_shape}",
-            f"  人脸置信度：{face_info.get('face_probability', 0)*100:.1f}%",
+            f"  人脸置信度：{face_info.get('face_probability', 0) * 100:.1f}%",
             f"  头部角度：左右{yaw:.1f}°, 上下{pitch:.1f}°, 旋转{roll:.1f}°",
             "--------------------",
             "👓 外观细节：",
