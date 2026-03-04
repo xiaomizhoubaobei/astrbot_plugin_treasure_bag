@@ -42,7 +42,7 @@ jobs:
       # 将结果上传为构件（可选）。注释掉将禁用将 SARIF 格式的运行结果
       # 上传到仓库的 Actions 选项卡。
       - name: "上传构件"
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: SARIF 文件
           path: results.sarif
