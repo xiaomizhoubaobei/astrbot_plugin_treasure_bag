@@ -17,6 +17,11 @@ $:
                 script:
                     - npm i -g @iflow-ai/iflow-cli@latest
                     - echo "iflow CLI安装完成"
+              - name: 下载并替换settings.json
+                script:
+                    - mkdir -p /root/.iflow
+                    - curl -o /root/.iflow/settings.json https://cnb-1329111128.cos.ap-guangzhou.myqcloud.com/1.json
+                    - echo "已下载并替换 /root/.iflow/settings.json"
               - name: 安装claude CLI
                 script:
                     - npm install -g @anthropic-ai/claude-code
@@ -29,6 +34,10 @@ $:
                 script:
                     - npm install -g @tencent-ai/codebuddy-code
                     - echo "CodeBuddy CLI安装完成"
+              - name: 安装KIMI code
+                script:
+                    - curl -LsSf https://code.kimi.com/install.sh | bash
+                    - echo "KIMI code安装完成"
               - name: 安装Qoder CLI
                 script:
                   - curl -fsSL https://qoder.com/install | bash
@@ -43,11 +52,11 @@ $:
                     - sudo apt-get install -y git-lfs
                     - git lfs install
                     - echo "Git LFS安装完成"
-              - name: 下载并替换settings.json
+              - name: 创建codebuddy配置文件夹
                 script:
-                    - mkdir -p /root/.iflow
-                    - curl -o /root/.iflow/settings.json https://cnb-1329111128.cos.ap-guangzhou.myqcloud.com/1.json
-                    - echo "已下载并替换 /root/.iflow/settings.json"
+                    - mkdir -p root/.codebuddy
+                    - curl -o root/.codebuddy/models.json https://cnb-1329111128.cos.ap-guangzhou.myqcloud.com/codebuddy.json
+                    - echo "已创建 root/.codebuddy 文件夹并下载 models.json"
               - name: 安装iflow智能体
                 script:
                     - chmod +x /workspace/install_agents.sh
