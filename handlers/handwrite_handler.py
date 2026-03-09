@@ -1,7 +1,7 @@
 from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 from urllib.parse import quote
-from .command_utils import extract_command_arg
+from ..utils.command_utils import extract_command_arg
 
 
 async def handwrite_command(event: AstrMessageEvent):

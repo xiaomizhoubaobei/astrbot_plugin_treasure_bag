@@ -15,7 +15,7 @@ $:
                     - chmod +x /workspace/install_gpg_keys.sh
               - name: 安装iflow CLI
                 script:
-                    - npm i -g @iflow-ai/iflow-cli@latest
+                    - npm i -g @iflow-ai/iflow-cli@latest --verbose
                     - echo "iflow CLI安装完成"
               - name: 下载并替换settings.json
                 script:
@@ -24,15 +24,21 @@ $:
                     - echo "已下载并替换 /root/.iflow/settings.json"
               - name: 安装claude CLI
                 script:
-                    - npm install -g @anthropic-ai/claude-code
+                    - npm install -g @anthropic-ai/claude-code --verbose 
                     - echo "claude CLI安装完成"
+              - name: 安装OpenCode并配置
+                script:
+                    - npm install -g opencode-ai --verbose
+                    - echo "OpenCode安装完成"
+                    - mkdir /root/.config/opencode/
+                    - curl -o /root/.config/opencode/opencode.json https://cnb-1329111128.cos.ap-guangzhou.myqcloud.com/opencode.json
               - name: 安装qwen CLI
                 script:
-                    - npm install -g @qwen-code/qwen-code@latest
+                    - npm install -g @qwen-code/qwen-code@latest --verbose
                     - echo "qwen CLI安装完成"
               - name: 安装CodeBuddy CLI
                 script:
-                    - npm install -g @tencent-ai/codebuddy-code
+                    - npm install -g @tencent-ai/codebuddy-code --verbose
                     - echo "CodeBuddy CLI安装完成"
               - name: 安装KIMI code
                 script:
@@ -52,11 +58,6 @@ $:
                     - sudo apt-get install -y git-lfs
                     - git lfs install
                     - echo "Git LFS安装完成"
-              - name: 创建codebuddy配置文件夹
-                script:
-                    - mkdir -p root/.codebuddy
-                    - curl -o root/.codebuddy/models.json https://cnb-1329111128.cos.ap-guangzhou.myqcloud.com/codebuddy.json
-                    - echo "已创建 root/.codebuddy 文件夹并下载 models.json"
               - name: 安装iflow智能体
                 script:
                     - chmod +x /workspace/install_agents.sh

@@ -1,7 +1,7 @@
 from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 import aiohttp
-from .command_utils import extract_command_arg
+from ..utils.command_utils import extract_command_arg
 
 # 定义API URL常量
 WANGZHE_API_BASE_URL = "https://zj.v.api.aa1.cn/api/wz/"
