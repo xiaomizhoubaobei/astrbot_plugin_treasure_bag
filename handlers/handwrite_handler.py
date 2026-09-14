@@ -1,6 +1,8 @@
-from astrbot.api.event import AstrMessageEvent
-from astrbot.api import logger
 from urllib.parse import quote
+
+from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
+
 from ..utils.command_utils import extract_command_arg
 
 
