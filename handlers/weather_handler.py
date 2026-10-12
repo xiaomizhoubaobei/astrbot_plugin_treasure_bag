@@ -1,7 +1,8 @@
-from astrbot.api.event import AstrMessageEvent
-from astrbot.api import logger
-import aiohttp
 import json
+
+import aiohttp
+from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
 
 
 async def weather_command(event: AstrMessageEvent):

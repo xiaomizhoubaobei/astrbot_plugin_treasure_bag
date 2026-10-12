@@ -54,12 +54,12 @@ if [ -n "$USER_INFO" ]; then
     # 格式通常是 "Name <email@example.com>"
     GIT_COMMITTER_NAME=祁筱欣
     GIT_COMMITTER_EMAIL=$(echo "$USER_INFO" | grep -o '<[^>]*>' | sed 's/[<>]//g')
-    
+
     if [ -n "$GIT_COMMITTER_NAME" ] && [ -n "$GIT_COMMITTER_EMAIL" ]; then
         echo "==> 设置 Git 提交者信息: $GIT_COMMITTER_NAME <$GIT_COMMITTER_EMAIL>"
         export GIT_COMMITTER_NAME="$GIT_COMMITTER_NAME"
         export GIT_COMMITTER_EMAIL="$GIT_COMMITTER_EMAIL"
-        
+
         # 持久化到 bashrc
         grep -qxF "export GIT_COMMITTER_NAME=\"$GIT_COMMITTER_NAME\"" ~/.bashrc || echo "export GIT_COMMITTER_NAME=\"$GIT_COMMITTER_NAME\"" >>~/.bashrc
         grep -qxF "export GIT_COMMITTER_EMAIL=\"$GIT_COMMITTER_EMAIL\"" ~/.bashrc || echo "export GIT_COMMITTER_EMAIL=\"$GIT_COMMITTER_EMAIL\"" >>~/.bashrc
