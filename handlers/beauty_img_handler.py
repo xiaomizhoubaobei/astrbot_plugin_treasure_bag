@@ -1,6 +1,6 @@
 import aiohttp
-from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
 
 # 美女图片API地址
 BEAUTY_IMAGE_API_URL = "https://v.api.aa1.cn/api/pc-girl_bz/index.php?wpon=url"
