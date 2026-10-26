@@ -1,6 +1,6 @@
-from astrbot.api.event import AstrMessageEvent
-from astrbot.api import logger
 import aiohttp
+from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
 
 
 async def get_hitokoto(event: AstrMessageEvent):
