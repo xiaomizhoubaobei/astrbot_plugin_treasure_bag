@@ -1,16 +1,17 @@
-from astrbot.api.event import filter, AstrMessageEvent
-from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent, filter
+from astrbot.api.star import Context, Star
 from astrbot.core import AstrBotConfig
-from .handlers.hitokoto_handler import get_hitokoto
-from .baidu.beauty_handler import get_beauty_score
+
 from .baidu.baidu_auth import init_baidu_credentials
-from .handlers.wangzhe_handler import wangzhe_command
-from .handlers.handwrite_handler import handwrite_command
+from .baidu.beauty_handler import get_beauty_score
 from .handlers.beauty_img_handler import beauty_img_command
+from .handlers.handwrite_handler import handwrite_command
+from .handlers.hitokoto_handler import get_hitokoto
 from .handlers.sad_word_handler import get_sad_word
-from .handlers.xingzuo_handler import xingzuo_command
+from .handlers.wangzhe_handler import wangzhe_command
 from .handlers.weather_handler import weather_command
+from .handlers.xingzuo_handler import xingzuo_command
 
 
 class TreasureBagPlugin(Star):
