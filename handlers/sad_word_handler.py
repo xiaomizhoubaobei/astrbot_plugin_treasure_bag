@@ -1,6 +1,6 @@
 import httpx
-from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
 
 # 定义API URL常量
 SAD_WORD_API_URL = "https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json"
