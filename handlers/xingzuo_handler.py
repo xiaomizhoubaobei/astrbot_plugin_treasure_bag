@@ -1,6 +1,6 @@
 import httpx
-from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
+from astrbot.api.event import AstrMessageEvent
 
 # 定义API URL常量
 XINGZUO_API_BASE_URL = "https://v.api.aa1.cn/api/xingzuo/"
