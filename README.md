@@ -1,19 +1,20 @@
 # Treasure Bag Plugin
 
-![GitHub Repo stars](https://img.shields.io/github/stars/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
-![GitHub forks](https://img.shields.io/github/forks/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
-![GitHub watchers](https://img.shields.io/github/watchers/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
+[![GitHub watchers](https://img.shields.io/github/watchers/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/watchers)
 [![GitHub issues](https://img.shields.io/github/issues/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/issues)
 [![GitHub license](https://img.shields.io/github/license/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/blob/main/LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/releases)
-[![Commit Activity](https://img.shields.io/github/commit-activity/w/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
-![GitHub last commit](https://img.shields.io/github/last-commit/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
-![GitHub contributors](https://img.shields.io/github/contributors/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
+[![Commit Activity](https://img.shields.io/github/commit-activity/w/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/commits/main)
+[![GitHub contributors](https://img.shields.io/github/contributors/xiaomizhoubaobei/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag/graphs/contributors)
 ![Python Version](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
-![Code Review](https://img.shields.io/badge/code_review-100%25-brightgreen.svg)
-![Repo Size](https://img.shields.io/github/repo-size/xiaomizhoubaobei/astrbot_plugin_treasure_bag.svg)
+[![Language](https://commit.cool/badge/language/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
+[![Repo Size](https://img.shields.io/github/repo-size/xiaomizhoubaobei/astrbot_plugin_treasure_bag.svg)](https://github.com/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
+[![Repo Age](https://commit.cool/badge/age/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
+[![Issue Close Rate](https://commit.cool/badge/issues/close_rate/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
+[![PR Merge Rate](https://commit.cool/badge/pull/merge_rate/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
 
 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
 
