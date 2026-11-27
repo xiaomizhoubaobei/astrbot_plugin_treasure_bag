@@ -50,9 +50,10 @@ jobs:
       - name: 安装依赖
         run: |
           python -m pip install --upgrade pip
-          # requirements-dev.txt 已包含运行依赖与测试工具；不安装 AstrBot 宿主，
-          # tests/conftest.py 会注入最小桩。
-          pip install -r requirements-dev.txt
+          # requirements-dev.txt 只有测试工具；aiohttp/httpx 等运行依赖在
+          # requirements.txt。tests/conftest.py 会导入它们，必须一起安装。
+          # AstrBot 宿主不安装，由 conftest 注入最小桩。
+          pip install -r requirements.txt -r requirements-dev.txt
 
       - name: 运行测试并统计覆盖率
         env:
