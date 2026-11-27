@@ -1,5 +1,5 @@
 from astrbot.api.event import filter, AstrMessageEvent
-from astrbot.api.star import Context, Star, register
+from astrbot.api.star import Context, Star
 from astrbot.api import logger
 from astrbot.core import AstrBotConfig
 from .handlers.hitokoto_handler import get_hitokoto
