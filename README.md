@@ -43,8 +43,12 @@
 ├── utils/               # 工具函数
 │   ├── __init__.py
 │   └── command_utils.py         # 命令处理工具
-└── config/              # 配置相关
-    └── __init__.py
+├── config/              # 配置相关
+│   └── __init__.py
+└── tests/               # 单元测试
+    ├── conftest.py      # 测试固件与 AstrBot API 桩
+    ├── fakes.py         # HTTP 客户端测试替身
+    └── test_*.py        # 各模块单元测试
 ```
 
 ## 功能详情
@@ -66,6 +70,17 @@
 4. /handwrite [内容] - 生成手写样式的图片
 5. /beauty-img (或 /美女图片, /今日美女, /随机美女图片) - 获取一张随机美女图片
 6. /treasurebag-help - 显示帮助信息
+
+## 运行单元测试
+
+安装测试依赖并执行：
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+python -m pytest -v
+```
+
+测试通过 AstrBot API 桩和 HTTP 客户端替身隔离外部依赖，无需真实网络或 AstrBot 运行环境。
 
 ## 安装
 1. 将插件文件夹放入AstrBot的plugins目录
