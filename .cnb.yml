@@ -46,6 +46,46 @@ $:
                   - rm -rf /tmp/astrbot-tmp
                   - git clone https://github.com/AstrBotDevs/AstrBot.git
 main:
+      # CNB 主仓是源，PR 分支不会同步到 GitHub 镜像，PR 门禁必须在 CNB 侧跑。
+      # 这里跑最小检查集（代码规范 + 单测覆盖率上报）；3.12-3.15 矩阵与
+      # Codecov 上报仍由 GitHub Actions 负责，push 到 main 只做镜像同步。
+      pull_request:
+        - docker:
+            image: docker.cnb.cool/xmzzuzhi/cnb-docker/python:0.0.1
+          runner:
+            cpus: 4
+          stages:
+            - name: 安装依赖
+              # CNB 会把 script 数组用 && 拼接，多行内容必须放在同一个块里。
+              script:
+                    - |
+                      set -e
+                      pip install --upgrade pip
+                      pip install -r requirements.txt -r requirements-dev.txt
+            - name: 代码规范检查
+              script:
+                    - pip install pre-commit
+                    - pre-commit run --all-files
+            - name: 单元测试与覆盖率
+              # 先建 AstrBot 桩再开 coverage，口径与 tests/run_coverage.py 一致。
+              script:
+                    - |
+                      set -e
+                      python -m tests.run_coverage
+                      # testing:coverage 不支持 coverage.py 的 XML，改由 lcov 上报。
+                      coverage lcov -o lcov.info
+                      # 零语句文件（如 __init__.py）的记录不带 LF，会导致汇总 NaN；
+                      # 只保留含 LF 的记录。
+                      awk 'BEGIN { RS="end_of_record"; ORS="end_of_record\n" } /LF:/ { print }' lcov.info > lcov.filtered.info
+                      mv lcov.filtered.info lcov.info
+            - name: 上报单测覆盖率
+              type: testing:coverage
+              options:
+                    pattern: lcov.info
+                    # 报告缺失说明上游步骤没产出，直接失败，避免「静默不上报」。
+                    breakIfNoCoverage: true
+      # push 到 main：只把代码同步到 GitHub 镜像仓库。
+      # 单测覆盖率、Release 与插件 zip 打包统一由 GitHub Actions 产出。
       push:
         - services:
             - docker
