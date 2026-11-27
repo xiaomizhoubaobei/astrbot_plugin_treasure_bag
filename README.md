@@ -1,7 +1,5 @@
 # Treasure Bag Plugin
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_shield&issueType=security)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_small)
 ![GitHub Repo stars](https://img.shields.io/github/stars/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
 ![GitHub forks](https://img.shields.io/github/forks/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
 ![GitHub watchers](https://img.shields.io/github/watchers/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
@@ -111,5 +109,3 @@
 ## 更新日志
 完整的历史版本记录请查看 [CHANGELOG.md](./CHANGELOG.md)
 
-## 审计
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fxiaomizhoubaobei%2Fastrbot_plugin_treasure_bag?ref=badge_large&issueType=license)
