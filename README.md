@@ -15,6 +15,7 @@
 [![Repo Age](https://commit.cool/badge/age/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
 [![Issue Close Rate](https://commit.cool/badge/issues/close_rate/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
 [![PR Merge Rate](https://commit.cool/badge/pull/merge_rate/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)](https://cnb.cool/XMZZUZHI/Astrbot/astrbot_plugin_treasure_bag)
+[![codecov](https://codecov.io/gh/xiaomizhoubaobei/astrbot_plugin_treasure_bag/branch/main/graph/badge.svg)](https://codecov.io/gh/xiaomizhoubaobei/astrbot_plugin_treasure_bag)
 
 一个为AstrBot设计的多功能插件，包含多种实用和娱乐功能。
 
@@ -78,6 +79,12 @@
 ```bash
 pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest -v
+```
+
+生成覆盖率报告（终端摘要 + `coverage.xml`，CI 会将其上报 Codecov）：
+
+```bash
+python -m tests.run_coverage
 ```
 
 测试通过 AstrBot API 桩和 HTTP 客户端替身隔离外部依赖，无需真实网络或 AstrBot 运行环境。

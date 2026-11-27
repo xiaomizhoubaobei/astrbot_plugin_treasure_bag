@@ -40,3 +40,7 @@ Thumbs.db
 astrbot/
 AstrBot/
 .claude/
+
+# 测试覆盖率产物
+.coverage
+coverage.xml
