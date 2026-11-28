@@ -44,4 +44,14 @@ jobs:
           pip install -r requirements.txt -r requirements-dev.txt
 
       - name: 运行单元测试
-        run: python -m pytest -v
+        # --junitxml 生成测试结果报告，交给下一步上传给 Codecov。
+        run: python -m pytest -v --junitxml=junit.xml -o junit_family=legacy
+
+      # if: ${{ !cancelled() }} 确保测试失败时也上传结果，PR 里可看到失败详情。
+      - name: 上报测试结果到 Codecov
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./junit.xml

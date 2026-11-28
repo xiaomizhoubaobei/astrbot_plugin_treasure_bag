@@ -22,15 +22,17 @@ coverage:
         informational: true
 
 # 覆盖率构成（供 Codecov 页面展开查看）
-# 注意：paths 是与 coverage.yml 的 `--source` 口径对应的文件范围，本仓库
-# 业务逻辑全部位于 src/（main.py 仅做注册转发，已被 --source=src 排除在统计
-# 之外），实测 coverage.xml 的文件清单中只有 src/ 下的 15 个文件、不含
-# main.py，故此处只列 src/。Codecov 文档仅说明 paths 为对已上传报告内文件的
-# 匹配模式，匹配不到即不匹配，此处不对其在页面上的呈现效果做进一步断言。
+# 本仓库不存在 src/ 目录，源码位于 handlers/、baidu/、utils/ 及根目录的
+# main.py、build_release.py。paths 必须匹配 coverage.xml 里的真实文件路径，
+# 否则带 --flag unittests 的上传会匹配不到任何文件而被 Codecov 判为格式错误。
 flags:
   unittests:
     paths:
-      - src/
+      - handlers/
+      - baidu/
+      - utils/
+      - main.py
+      - build_release.py
     carryforward: true
 
 # 忽略非业务代码，避免拉低口径
