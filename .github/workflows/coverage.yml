@@ -59,20 +59,24 @@ jobs:
           # 覆盖率数据文件放到临时目录，避免污染工作区
           COVERAGE_FILE: ${{ runner.temp }}/.coverage
         # --junitxml 生成测试结果报告，交给下一步上传给 Codecov。
-        # junit_family=legacy 兼容 codecov/test-results-action 的解析口径。
+        # junit_family=legacy 兼容 Codecov test_results 的解析口径。
         run: python -m tests.run_coverage -- -q --junitxml=junit.xml -o junit_family=legacy
 
-      # 测试结果（失败用例报告）由 test-results-action 上报；
+      # 测试结果（失败用例报告）由 codecov-action 以 test_results 类型上报。
+      # 原 codecov/test-results-action 已弃用，且会触发 Node.js 20 弃用警告；
+      # 官方建议统一迁移到 codecov-action 的 report_type: test_results。
       # !cancelled() 确保失败时也上传，方便在 PR 里看到失败详情；无 token 时安全跳过。
       - name: 上报测试结果到 Codecov
         if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         continue-on-error: true
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./junit.xml
           flags: unittests
           name: python-${{ matrix.python-version }}
+          report_type: test_results
+          disable_search: true
 
       # 仅矩阵首个版本上报覆盖率，避免多版本互覆盖导致徽章抖动；无 token 时安全跳过。
       - name: 上报覆盖率到 Codecov
