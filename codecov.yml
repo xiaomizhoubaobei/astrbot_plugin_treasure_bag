@@ -1,0 +1,45 @@
+# Codecov 配置：覆盖率报告口径与门禁策略
+# 说明：本项目覆盖率由 .github/workflows/coverage.yml 产出 coverage.xml 后上报，
+#       CNB 侧的测试与覆盖率上报（testing:coverage）已移除，Codecov 为唯一覆盖率来源。
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+  status:
+    # 项目整体覆盖率：允许小幅波动，避免无关改动的 PR 被卡
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+    # 本次变更的增量覆盖率：新增代码应当带测试
+    patch:
+      default:
+        target: auto
+        threshold: 5%
+        informational: true
+
+# 覆盖率构成（供 Codecov 页面展开查看）
+# 注意：paths 是与 coverage.yml 的 `--source` 口径对应的文件范围，本仓库
+# 业务逻辑全部位于 src/（main.py 仅做注册转发，已被 --source=src 排除在统计
+# 之外），实测 coverage.xml 的文件清单中只有 src/ 下的 15 个文件、不含
+# main.py，故此处只列 src/。Codecov 文档仅说明 paths 为对已上传报告内文件的
+# 匹配模式，匹配不到即不匹配，此处不对其在页面上的呈现效果做进一步断言。
+flags:
+  unittests:
+    paths:
+      - src/
+    carryforward: true
+
+# 忽略非业务代码，避免拉低口径
+ignore:
+  - "tests/"
+  - "docs/"
+  - "install_gpg_keys.sh"
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
