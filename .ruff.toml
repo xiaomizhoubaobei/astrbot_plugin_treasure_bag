@@ -1,0 +1,2 @@
+# Keep the lint scope stable after upgrading ruff-pre-commit from v0.2.0.
+lint.select = ["E4", "E7", "E9", "F"]
