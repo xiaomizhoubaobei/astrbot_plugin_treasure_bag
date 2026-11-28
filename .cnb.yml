@@ -66,7 +66,8 @@ main:
               script:
                     - |
                       set -e
-                      pip install "pre-commit==4.7.0"
+                      # 默认镜像的 virtualenv 轮子会 403，改走官方源安装。
+                      pip install --index-url https://pypi.org/simple "pre-commit==4.7.0"
                       python -m pre_commit run --all-files || python -m pre_commit run --all-files
             - name: 单元测试与覆盖率
               # 先建 AstrBot 桩再开 coverage，口径与 tests/run_coverage.py 一致。
