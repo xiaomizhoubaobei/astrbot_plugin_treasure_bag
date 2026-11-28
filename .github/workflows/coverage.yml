@@ -2,11 +2,12 @@ name: 单元测试与覆盖率
 
 # 单测验证与 Codecov 上报合并在一条流水线：一次运行同时产出
 # junit.xml（测试结果）+ coverage.xml（覆盖率），各上报一次，避免重复。
-# 仅 PR 触发：合并后单测验证与覆盖率上报都在这里完成，一次运行一次上报。
+# PR 自动触发；同时保留手动触发入口，方便随时点 Run workflow。
 on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 # 同一分支/PR 的旧运行自动取消，避免重复上报造成徽章抖动
 concurrency:
