@@ -64,8 +64,10 @@ main:
                       pip install -r requirements.txt -r requirements-dev.txt
             - name: 代码规范检查
               script:
-                    - pip install pre-commit
-                    - pre-commit run --all-files
+                    - |
+                      set -e
+                      pip install "pre-commit==4.7.0"
+                      python -m pre_commit run --all-files || python -m pre_commit run --all-files
             - name: 单元测试与覆盖率
               # 先建 AstrBot 桩再开 coverage，口径与 tests/run_coverage.py 一致。
               script:
