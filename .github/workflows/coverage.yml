@@ -1,11 +1,9 @@
-name: Coverage
+name: 单元测试与覆盖率
 
-# CNB main 推送会同步到本仓库的 GitHub 镜像，覆盖率随 push 更新；
-# pull_request 场景由 Codecov 给出 diff 覆盖。
+# 单测验证与 Codecov 上报合并在一条流水线：一次运行同时产出
+# junit.xml（测试结果）+ coverage.xml（覆盖率），各上报一次，避免重复。
+# 仅 PR 触发：合并后单测验证与覆盖率上报都在这里完成，一次运行一次上报。
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -24,7 +22,7 @@ jobs:
   coverage:
     name: 单元测试与覆盖率 (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    # 与 unit-test.yml 的 Python 矩阵保持一致；fail-fast: false 让每个版本都给出结论。
+    # fail-fast: false 让每个 Python 版本都给出结论。
     strategy:
       fail-fast: false
       matrix:
@@ -64,7 +62,7 @@ jobs:
         run: python -m tests.run_coverage -- -q --junitxml=junit.xml -o junit_family=legacy
 
       # 测试结果（失败用例报告）由 test-results-action 上报；
-      # if: ${{ !cancelled() }} 确保失败时也会上传，方便在 PR 里看到失败详情。
+      # !cancelled() 确保失败时也上传，方便在 PR 里看到失败详情；无 token 时安全跳过。
       - name: 上报测试结果到 Codecov
         if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         continue-on-error: true
@@ -75,7 +73,7 @@ jobs:
           flags: unittests
           name: python-${{ matrix.python-version }}
 
-      # 仅矩阵首个版本上报，避免多版本互覆盖导致徽章抖动；无 token 时安全跳过。
+      # 仅矩阵首个版本上报覆盖率，避免多版本互覆盖导致徽章抖动；无 token 时安全跳过。
       - name: 上报覆盖率到 Codecov
         if: ${{ always() && matrix.python-version == '3.12' && env.CODECOV_TOKEN != '' }}
         continue-on-error: true
