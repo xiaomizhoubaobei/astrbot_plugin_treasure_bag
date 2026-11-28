@@ -1,7 +1,8 @@
-from datetime import datetime
-import aiohttp
 import asyncio
-from astrbot.api import logger, AstrBotConfig
+from datetime import datetime
+
+import aiohttp
+from astrbot.api import AstrBotConfig, logger
 
 
 class BaiduAuthManager:
